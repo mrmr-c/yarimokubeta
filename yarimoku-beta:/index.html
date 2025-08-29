@@ -1,139 +1,134 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ヤリモク判定くんβ｜マッチングアプリあるある</title>
-  <meta name="description" content="ヤリモクかどうかをLINEや行動パターンから判定するチェックツール。マッチングアプリや恋愛の悩みを抱えるあなたへ、あるあるから見抜く“都合の良い女”脱出のヒント。">
-  <meta name="keywords" content="ヤリモク判定, やりもく診断, マチアプあるある, ヤリモクLINE, 都合の良い女, 恋愛, 悩み, マッチングアプリ, ヤリモクチェック, やりもく, LINE, あるある">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="index, follow">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ヤリモク判定くんβ 彡(^)(^)</title>
+  <meta name="description" content="マチアプあるある　ヤリモクかどうかを判定する無料診断コンテンツです。ヤリモクチェッカー">
+  <meta name="keywords" content="ヤリモク, やりもく, ヤリモクチェッカー, あるある, 恋愛, 都合の良い女, マチアプ, マッチングアプリ, ヤリモク診断, ヤリモク判定">
+
   <style>
     body {
-      font-family: "Helvetica Neue", sans-serif;
-      margin: 0;
-      padding: 2em;
-      background: #fdf4ee;
-      color: #333;
-      line-height: 1.8;
+      font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background-color: #fff8f5;
       text-align: center;
+      color: #333;
+      padding: 40px 20px;
     }
+
     h1 {
-      font-size: 2em;
-      color: #d63384;
-      margin-bottom: 1em;
+      color: #e83e6b;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
+
+    .sub {
+      font-size: 1rem;
+      color: #888;
+      margin-bottom: 50px;
+    }
+
     .question {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin: 2em 0 1em;
+      font-size: 1.5rem;
+      margin-bottom: 30px;
     }
+
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 1em;
-      margin-bottom: 3em;
+      gap: 30px;
     }
+
     button {
-      font-size: 1.1em;
-      padding: 0.8em 1.6em;
-      border: 1px solid #999;
-      border-radius: 8px;
+      background-color: #e83e6b;
+      color: white;
+      font-size: 1.2rem;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      background-color: #f1f1f1;
-      color: #000;
     }
-    .footer {
-      color: #888;
-      font-size: 0.9em;
+
+    button:hover {
+      background-color: #c92b56;
     }
+
     .result {
-      font-size: 1.2em;
-      margin-top: 2em;
-      padding: 1.5em;
-      background: #fff;
-      border-left: 5px solid #f06292;
-      max-width: 500px;
-      margin-inline: auto;
+      font-size: 1.5rem;
+      margin-top: 50px;
+      color: #d40000;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
-
   <h1>ヤリモク判定くんβ 彡(^)(^)</h1>
+  <p class="sub">((( ´w｀ ))) あなたがどう感じたかが、いちばん大切です</p>
 
-  <div id="quiz"></div>
-  <div id="result" class="result" style="display: none;"></div>
+  <div id="app">
+    <p class="question" id="question">すぐに『住んでる駅どこ？』と聞かれた</p>
+    <div class="buttons">
+      <button onclick="answer(true)">はい</button>
+      <button onclick="answer(false)">いいえ</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
 
-  <p class="footer">((( ´w｀ ))) あなたがどう感じたかが、いちばん大切です</p>
+  <p class="footer">▁▂▃▅▆▇█▓▒(((　˙-˙　)バリアァァァァァァ</p>
 
   <script>
     const questions = [
       "すぐに『住んでる駅どこ？』と聞かれた",
+      "すぐに『どこに住んでるの？』と聞かれた",
+      "すぐ通話しようとしてくる",
+      "自分の写真や外見についてしか言及しない",
+      "仕事や趣味の話はスルーされがち",
+      "“会わないとわからない”などと言う",
+      "タメ口で距離がやたら近い",
+      "家に来てよ、家行っていい？などの話がすぐ出る",
       "夜遅い時間ばかりに連絡が来る",
-      "デートがほぼ家かホテル",
-      "休日より平日の夜に会うことが多い",
-      "将来の話をするとはぐらかされる",
-      "LINEの返事が早いのは会いたいときだけ"
+      "休日に会ってくれない",
+      "返信が早いのは会いたいときだけ"
     ];
 
     let current = 0;
     let score = 0;
 
-    const quiz = document.getElementById("quiz");
-    const result = document.getElementById("result");
-
-    function showQuestion() {
-      quiz.innerHTML = "";
-
-      const qText = document.createElement("div");
-      qText.className = "question";
-      qText.textContent = questions[current];
-      quiz.appendChild(qText);
-
-      const btns = document.createElement("div");
-      btns.className = "buttons";
-
-      const yes = document.createElement("button");
-      yes.textContent = "はい";
-      yes.onclick = () => next(true);
-      btns.appendChild(yes);
-
-      const no = document.createElement("button");
-      no.textContent = "いいえ";
-      no.onclick = () => next(false);
-      btns.appendChild(no);
-
-      quiz.appendChild(btns);
-    }
-
-    function next(answer) {
-      if (answer) score++;
+    function answer(isYes) {
+      if (isYes) score++;
       current++;
+
+      const questionElem = document.getElementById("question");
+      const resultElem = document.getElementById("result");
+
       if (current < questions.length) {
-        showQuestion();
+        questionElem.textContent = questions[current];
       } else {
-        showResult();
+        questionElem.style.display = "none";
+        document.querySelector(".buttons").style.display = "none";
+
+        let resultText = "";
+        if (score >= 8) {
+          resultText = "🚨 真っ赤なヤリモクです！今すぐ逃げて！";
+        } else if (score >= 6) {
+          resultText = "🔴 ヤリモク注意報！慎重に！";
+        } else if (score >= 3) {
+          resultText = "🟡 グレーゾーン。もう少し様子を見て判断を。";
+        } else {
+          resultText = "🟢 今のところ安心そう。でも油断せずにね！";
+        }
+
+        resultElem.textContent = resultText;
       }
     }
-
-    function showResult() {
-      quiz.style.display = "none";
-      result.style.display = "block";
-
-      let text = "";
-      if (score >= 4) {
-        text = "⚠️ かなりの高確率で『ヤリモク』です。冷静に相手の言動を見直して。";
-      } else if (score >= 2) {
-        text = "🧐 可能性あり。関係性を続けるなら慎重に観察を。";
-      } else {
-        text = "😊 今のところ大丈夫そう。安心して関係を深めてOK。";
-      }
-
-      result.textContent = text;
-    }
-
-    showQuestion();
   </script>
-
 </body>
 </html>
